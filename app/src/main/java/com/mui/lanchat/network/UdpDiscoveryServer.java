@@ -27,9 +27,9 @@ public class UdpDiscoveryServer {
     private Context context;
 
     public interface OnDiscoveryListener {
-        void onPeerDiscovered(String ipAddress, String senderMessage);
-        void onError(String message);
-    }
+    void onPeerDiscovered(String ipAddress, String senderMessage);
+    void onUdpServerError(String message);
+}
 
     public UdpDiscoveryServer(Context context, OnDiscoveryListener listener) {
         this.context = context;
