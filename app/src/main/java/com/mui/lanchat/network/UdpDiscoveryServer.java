@@ -27,9 +27,9 @@ public class UdpDiscoveryServer {
     private Context context;
 
     public interface OnDiscoveryListener {
-    void onPeerDiscovered(String ipAddress, String senderMessage);
-    void onUdpServerError(String message);
-}
+        void onPeerDiscovered(String ipAddress, String senderMessage);
+        void onUdpServerError(String message); // <--- MODIFIED LINE
+    }
 
     public UdpDiscoveryServer(Context context, OnDiscoveryListener listener) {
         this.context = context;
@@ -79,13 +79,13 @@ public class UdpDiscoveryServer {
                 if (running) { // Only log if it's an unexpected error, not due to stop()
                     Log.e(TAG, "SocketException in UDP server: " + e.getMessage());
                     if (listener != null) {
-                        listener.onError("Socket error: " + e.getMessage());
+                        listener.onUdpServerError("Socket error: " + e.getMessage()); // <--- MODIFIED LINE
                     }
                 }
             } catch (IOException e) {
                 Log.e(TAG, "IOException in UDP server: " + e.getMessage());
                 if (listener != null) {
-                    listener.onError("IO error: " + e.getMessage());
+                    listener.onUdpServerError("IO error: " + e.getMessage()); // <--- MODIFIED LINE
                 }
             } finally {
                 if (socket != null && !socket.isClosed()) {
