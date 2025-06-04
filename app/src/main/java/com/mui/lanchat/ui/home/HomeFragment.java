@@ -179,9 +179,9 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
     }
 
     @Override
-    public void onError(String message) {
+    public void onUdpServerError(String message) { // <--- MODIFIED LINE
         Log.e(TAG, "UDP Server Error: " + message);
-        updateStatus("Discovery Error: " + message);
+        updateStatus("Discovery Error (UDP Server): " + message); // Clarified message
     }
     //endregion
 
@@ -207,10 +207,11 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
         }
     }
 
+    // This method name is distinct (onDiscoveryError), so it doesn't conflict
     @Override
     public void onDiscoveryError(String message) {
         Log.e(TAG, "UDP Client Error: " + message);
-        updateStatus("Discovery Error: " + message);
+        updateStatus("Discovery Error (UDP Client): " + message); // Clarified message
     }
     //endregion
 
@@ -253,6 +254,13 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
              chatServer.broadcastMessage(message);
         }
     }
+
+    // This was previously onError, now renamed to match ChatServer.OnClientConnectionListener
+    @Override
+    public void onChatServerError(String message) { // <--- MODIFIED LINE
+        Log.e(TAG, "Chat Server Error: " + message);
+        uiHandler.post(() -> updateStatus("Chat Server Error: " + message)); // Clarified message
+    }
     //endregion
 
     //region TCP Chat Client Callbacks (for when THIS device acts as client)
@@ -288,11 +296,11 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
         });
     }
 
-    // Message received by THIS device when it's acting as a client
+    // This was previously onError, now renamed to match ChatClient.OnConnectionStatusListener
     @Override
-    public void onError(String message) {
+    public void onChatClientError(String message) { // <--- MODIFIED LINE
         Log.e(TAG, "Chat Client Error: " + message);
-        uiHandler.post(() -> updateStatus("Chat Error: " + message));
+        uiHandler.post(() -> updateStatus("Chat Client Error: " + message)); // Clarified message
     }
     //endregion
 }
