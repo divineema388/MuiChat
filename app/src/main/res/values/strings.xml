@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Morden UI LAN Chat</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="hint_enter_message">Enter your message...</string>
+    <string name="button_send">Send</string>
+    <string name="chat_screen_title">LAN Chat</string>
+    <string name="settings_screen_title">Settings</string>
+    <string name="discovery_screen_title">Discover Peers</string>
+</resources>
