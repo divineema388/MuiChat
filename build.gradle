@@ -4,10 +4,12 @@ plugins {
     id 'org.jetbrains.kotlin.android' version '1.9.0' apply false
 }
 
-// Add this block below the plugins block
+// REMOVE THIS BLOCK IF IT'S PRESENT IN YOUR PROJECT-LEVEL build.gradle
+/*
 allprojects {
     repositories {
-        google()
+        google() // <--- REMOVE THIS!
         mavenCentral()
     }
 }
+*/
