@@ -34,7 +34,7 @@ public class ChatServer {
     public interface OnClientConnectionListener {
         void onClientConnected(String ipAddress);
         void onClientDisconnected(String ipAddress);
-        void onError(String message);
+        void onChatServerError(String message); // <--- MODIFIED LINE
     }
 
     public ChatServer(OnMessageReceivedListener messageListener, OnClientConnectionListener connectionListener) {
@@ -71,10 +71,10 @@ public class ChatServer {
                     }
                 }
             } catch (IOException e) {
-                if (running) { // Only log as error if server was supposed to be running
+                if (running) { // Only log if server was supposed to be running
                     Log.e(TAG, "IOException in Chat Server: " + e.getMessage());
                     if (connectionListener != null) {
-                        connectionListener.onError("Server error: " + e.getMessage());
+                        connectionListener.onChatServerError("Server error: " + e.getMessage()); // <--- MODIFIED LINE
                     }
                 }
             } finally {
