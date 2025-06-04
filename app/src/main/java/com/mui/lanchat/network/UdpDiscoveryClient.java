@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.mui.lanchat.utils.NetworkUtils;
+import java.net.SocketException;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
