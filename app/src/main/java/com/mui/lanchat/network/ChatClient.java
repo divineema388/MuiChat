@@ -33,7 +33,7 @@ public class ChatClient {
     public interface OnConnectionStatusListener {
         void onConnected(String serverIp);
         void onDisconnected();
-        void onError(String message);
+        void onChatClientError(String message); // <--- MODIFIED LINE
     }
 
     public ChatClient(String serverIp, OnMessageReceivedListener messageListener, OnConnectionStatusListener connectionStatusListener) {
@@ -57,7 +57,7 @@ public class ChatClient {
             } catch (IOException e) {
                 Log.e(TAG, "Error connecting to server " + serverIp + ": " + e.getMessage());
                 if (connectionStatusListener != null) {
-                    connectionStatusListener.onError("Connection failed: " + e.getMessage());
+                    connectionStatusListener.onChatClientError("Connection failed: " + e.getMessage()); // <--- MODIFIED LINE
                 }
                 close();
             }
