@@ -1,5 +1,10 @@
 package com.mui.lanchat.ui.home;
 
+import static com.mui.lanchat.ui.settings.SettingsFragment.KEY_NICKNAME;
+import static com.mui.lanchat.ui.settings.SettingsFragment.PREFS_NAME;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -48,6 +53,7 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
     private ChatClient chatClient;
 
     private String localIpAddress;
+    private String localNickname; // <--- NEW FIELD
     private String connectedPeerIp = null; // IP of the peer we are actively chatting with
 
     private Handler uiHandler = new Handler(Looper.getMainLooper());
@@ -81,11 +87,29 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
             return root; // Exit if no IP
         }
 
+        // Load nickname when fragment view is created
+        loadLocalNickname(); // <--- NEW CALL
+
         sendButton.setOnClickListener(v -> sendMessage());
 
         initializeNetworkComponents();
 
         return root;
+    }
+
+    // <--- NEW METHOD: Load Nickname
+    private void loadLocalNickname() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        localNickname = prefs.getString(KEY_NICKNAME, "Me"); // Default to "Me" if not set
+    }
+
+    // <--- NEW METHOD: Public method to clear chat history
+    public void clearChatHistory() {
+        uiHandler.post(() -> {
+            messageList.clear();
+            chatMessageAdapter.notifyDataSetChanged();
+            addMessage(new ChatMessage("System", "System", "Chat history cleared.")); // Add a system message
+        });
     }
 
     private void initializeNetworkComponents() {
@@ -112,8 +136,8 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
         if (messageContent.isEmpty()) {
             return;
         }
-
-        ChatMessage chatMessage = new ChatMessage(localIpAddress, messageContent);
+        // Use localNickname when creating ChatMessage
+        ChatMessage chatMessage = new ChatMessage(localIpAddress, localNickname, messageContent); // <--- MODIFIED LINE
 
         // Add to local chat
         addMessage(chatMessage);
@@ -179,9 +203,9 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
     }
 
     @Override
-    public void onUdpServerError(String message) { // <--- MODIFIED LINE
+    public void onUdpServerError(String message) {
         Log.e(TAG, "UDP Server Error: " + message);
-        updateStatus("Discovery Error (UDP Server): " + message); // Clarified message
+        updateStatus("Discovery Error (UDP Server): " + message);
     }
     //endregion
 
@@ -207,11 +231,10 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
         }
     }
 
-    // This method name is distinct (onDiscoveryError), so it doesn't conflict
     @Override
     public void onDiscoveryError(String message) {
         Log.e(TAG, "UDP Client Error: " + message);
-        updateStatus("Discovery Error (UDP Client): " + message); // Clarified message
+        updateStatus("Discovery Error (UDP Client): " + message);
     }
     //endregion
 
@@ -225,7 +248,8 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
                 updateStatus("Connected to: " + ipAddress + " (acting as Server)");
                 sendButton.setEnabled(true);
             }
-            addMessage(new ChatMessage("System", ipAddress + " joined the chat."));
+            // Use "System" for system messages, as they don't have an IP in this context
+            addMessage(new ChatMessage("System", "System", ipAddress + " joined the chat.")); // <--- MODIFIED LINE
         });
     }
 
@@ -240,7 +264,8 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
                 // Restart discovery to find new peers
                 if (udpDiscoveryClient != null) udpDiscoveryClient.startDiscovery();
             }
-            addMessage(new ChatMessage("System", ipAddress + " left the chat."));
+            // Use "System" for system messages
+            addMessage(new ChatMessage("System", "System", ipAddress + " left the chat.")); // <--- MODIFIED LINE
         });
     }
 
@@ -255,11 +280,10 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
         }
     }
 
-    // This was previously onError, now renamed to match ChatServer.OnClientConnectionListener
     @Override
-    public void onChatServerError(String message) { // <--- MODIFIED LINE
+    public void onChatServerError(String message) {
         Log.e(TAG, "Chat Server Error: " + message);
-        uiHandler.post(() -> updateStatus("Chat Server Error: " + message)); // Clarified message
+        uiHandler.post(() -> updateStatus("Chat Server Error: " + message));
     }
     //endregion
 
@@ -279,7 +303,8 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
             connectedPeerIp = serverIp;
             updateStatus("Connected to: " + serverIp + " (acting as Client)");
             sendButton.setEnabled(true);
-            addMessage(new ChatMessage("System", "Connected to " + serverIp));
+            // Use "System" for system messages
+            addMessage(new ChatMessage("System", "System", "Connected to " + serverIp)); // <--- MODIFIED LINE
         });
     }
 
@@ -290,17 +315,17 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
             connectedPeerIp = null;
             updateStatus("Disconnected from peer. Searching for peers...");
             sendButton.setEnabled(false);
-            addMessage(new ChatMessage("System", "Disconnected."));
+            // Use "System" for system messages
+            addMessage(new ChatMessage("System", "System", "Disconnected.")); // <--- MODIFIED LINE
             // Restart discovery to find new peers
             if (udpDiscoveryClient != null) udpDiscoveryClient.startDiscovery();
         });
     }
 
-    // This was previously onError, now renamed to match ChatClient.OnConnectionStatusListener
     @Override
-    public void onChatClientError(String message) { // <--- MODIFIED LINE
+    public void onChatClientError(String message) {
         Log.e(TAG, "Chat Client Error: " + message);
-        uiHandler.post(() -> updateStatus("Chat Client Error: " + message)); // Clarified message
+        uiHandler.post(() -> updateStatus("Chat Client Error: " + message));
     }
     //endregion
 }
