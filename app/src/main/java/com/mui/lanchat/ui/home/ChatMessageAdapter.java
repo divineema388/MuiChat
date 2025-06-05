@@ -45,7 +45,17 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         ChatMessage message = messageList.get(position);
         holder.messageTextView.setText(message.getMessage());
-        holder.senderTextView.setText(message.getSenderIp());
+
+        // Display nickname, fall back to IP if nickname is empty
+        String senderDisplay = message.getSenderName();
+        if (senderDisplay == null || senderDisplay.trim().isEmpty()) {
+            senderDisplay = message.getSenderIp();
+        } else {
+            // Optionally, combine name and IP for clarity
+            senderDisplay = message.getSenderName() + " (" + message.getSenderIp() + ")";
+        }
+        holder.senderTextView.setText(senderDisplay); // <--- MODIFIED LINE
+
         holder.timeTextView.setText(formatTimestamp(message.getTimestamp()));
     }
 
