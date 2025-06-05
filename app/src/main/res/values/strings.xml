@@ -1,12 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Morden UI LAN Chat</string>
+    <string name="app_name">MordenUILANChat</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="hint_enter_message">Enter your message...</string>
+    <string name="hint_enter_message">Enter message</string>
     <string name="button_send">Send</string>
-    <string name="chat_screen_title">LAN Chat</string>
-    <string name="settings_screen_title">Settings</string>
-    <string name="discovery_screen_title">Discover Peers</string>
+
+    <string name="title_settings">Settings</string>
+    <string name="settings_nickname_label">Your Nickname:</string>
+    <string name="hint_enter_nickname">Enter your nickname</string>
+    <string name="button_save_nickname">Save Nickname</string>
+    <string name="button_clear_chat_history">Clear Chat History</string>
+    <string name="nickname_saved_toast">Nickname saved!</string>
+    <string name="chat_history_cleared_toast">Chat history cleared!</string>
 </resources>
