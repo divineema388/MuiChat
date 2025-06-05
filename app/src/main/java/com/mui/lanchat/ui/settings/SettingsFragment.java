@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mui.lanchat.R;
+import com.mui.lanchat.MainActivity; // <--- NEW IMPORT
 import com.mui.lanchat.databinding.FragmentSettingsBinding;
 
 public class SettingsFragment extends Fragment {
@@ -45,7 +46,13 @@ public class SettingsFragment extends Fragment {
         loadNickname();
 
         saveNicknameButton.setOnClickListener(v -> saveNickname());
-        clearChatHistoryButton.setOnClickListener(v -> clearChatHistory());
+        clearChatHistoryButton.setOnClickListener(v -> {
+            clearChatHistory();
+            // Communicate to MainActivity to clear history in HomeFragment
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).onClearChatHistoryRequested();
+            }
+        });
 
         return root;
     }
@@ -67,16 +74,9 @@ public class SettingsFragment extends Fragment {
     }
 
     private void clearChatHistory() {
-        // This will send an event to HomeFragment to clear its message list.
-        // We'll implement the receiving part in HomeFragment later.
-        // For now, just show a toast.
         Toast.makeText(getContext(), R.string.chat_history_cleared_toast, Toast.LENGTH_SHORT).show();
-
-        // In a real app, you might use a ViewModel or SharedViewModel to communicate
-        // this event to HomeFragment more cleanly. For this simple example,
-        // we'll add a direct approach to HomeFragment later.
+        // The actual clearing will happen in HomeFragment via MainActivity
     }
-
 
     @Override
     public void onDestroyView() {
