@@ -102,6 +102,13 @@ public class HomeFragment extends Fragment implements UdpDiscoveryServer.OnDisco
         SharedPreferences prefs = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         localNickname = prefs.getString(KEY_NICKNAME, "Me"); // Default to "Me" if not set
     }
+public void scrollToBottom() {
+        uiHandler.post(() -> {
+            if (chatMessageAdapter != null && chatMessageAdapter.getItemCount() > 0) {
+                recyclerView.scrollToPosition(chatMessageAdapter.getItemCount() - 1);
+            }
+        });
+    }
 
     // <--- NEW METHOD: Public method to clear chat history
     public void clearChatHistory() {
